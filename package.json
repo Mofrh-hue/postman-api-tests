@@ -1,0 +1,17 @@
+{
+  "name": "postman-api-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Postman/Newman API tests for the Toolshop practice API",
+  "scripts": {
+    "test": "npm run test:api && npm run test:search",
+    "test:api": "newman run collections/toolshop-api.postman_collection.json -e environments/toolshop.postman_environment.json --reporters cli,htmlextra,junit --reporter-htmlextra-export reports/toolshop-api.html --reporter-junit-export reports/toolshop-api.xml",
+    "test:search": "newman run collections/toolshop-search-data-driven.postman_collection.json -e environments/toolshop.postman_environment.json -d data/search-terms.csv --reporters cli,htmlextra,junit --reporter-htmlextra-export reports/search-data-driven.html --reporter-junit-export reports/search-data-driven.xml",
+    "mock": "node mock/server.js",
+    "test:mock": "node scripts/run-against-mock.js"
+  },
+  "devDependencies": {
+    "newman": "6.2.1",
+    "newman-reporter-htmlextra": "1.23.1"
+  }
+}
