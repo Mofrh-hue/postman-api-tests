@@ -1,0 +1,11 @@
+term,min_results,max_results
+pliers,4,10
+hammer,6,12
+HAMMER,6,12
+drill,4,10
+sander,3,8
+chisel,3,8
+saw,2,8
+screwdriver,2,8
+wrench,1,6
+xyzzy-no-such-tool,0,0
