@@ -1,0 +1,81 @@
+{
+  "info": {
+    "_postman_id": "86b53f8a-0111-5354-8f92-a9605a773677",
+    "name": "Toolshop API - search (data-driven)",
+    "description": "Runs the same search request once per row of data/search-terms.csv: newman run ... -d data/search-terms.csv",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Search for {{term}}",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "const term = pm.iterationData.get('term');",
+              "const min = Number(pm.iterationData.get('min_results'));",
+              "const max = Number(pm.iterationData.get('max_results'));",
+              "",
+              "pm.test(`\"${term}\": status is 200`, () => pm.response.to.have.status(200));",
+              "",
+              "pm.test(`\"${term}\": returns between ${min} and ${max} results`, () => {",
+              "    pm.expect(body.total).to.be.within(min, max);",
+              "});",
+              "",
+              "pm.test(`\"${term}\": every result name contains the term (case-insensitive)`, () => {",
+              "    body.data.forEach(p => pm.expect(p.name.toLowerCase()).to.include(term.toLowerCase()));",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/products/search?q={{term}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "{{term}}"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Runs after every request in the collection",
+          "pm.test('Response time is under ' + pm.environment.get('maxResponseMs') + ' ms', () => {",
+          "    pm.expect(pm.response.responseTime).to.be.below(Number(pm.environment.get('maxResponseMs')));",
+          "});",
+          "pm.test('Response is JSON', () => {",
+          "    pm.response.to.have.header('Content-Type');",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": []
+}
